@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ricardorainha.cooking.R;
+import com.ricardorainha.cooking.model.Recipe;
 
 public class RecipeDetailFragment extends Fragment {
 
@@ -40,9 +41,11 @@ public class RecipeDetailFragment extends Fragment {
         mViewModel = ViewModelProviders.of(this).get(RecipeDetailViewModel.class);
         mViewModel.init(recipeIndex);
 
-        mViewModel.getRecipe().observe(this, recipe -> {
+        mViewModel.getRecipe().observe(this, recipe -> configureViews(recipe));
+    }
 
-        });
+    private void configureViews(Recipe recipe) {
+
     }
 
 }

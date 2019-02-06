@@ -25,10 +25,6 @@ public class RecipesListFragment extends Fragment {
     @BindView(R.id.rv_recipes)
     RecyclerView rvRecipes;
 
-
-    public RecipesListFragment() {
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
