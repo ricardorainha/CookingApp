@@ -43,4 +43,11 @@ public class Repository extends Observable implements Observer {
     public List<Recipe> getRecipes() {
         return recipes;
     }
+
+    public Recipe getRecipe(int index) {
+        if (recipes != null && (index < recipes.size()))
+            return recipes.get(index);
+        else
+            return null;
+    }
 }
