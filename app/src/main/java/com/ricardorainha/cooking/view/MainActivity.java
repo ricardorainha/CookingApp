@@ -1,20 +1,13 @@
 package com.ricardorainha.cooking.view;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
 import com.ricardorainha.cooking.R;
-import com.ricardorainha.cooking.model.Recipe;
-import com.ricardorainha.cooking.model.Repository;
 
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import androidx.appcompat.app.AppCompatActivity;
+
 
 public class MainActivity extends AppCompatActivity {
-
-    Repository repo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
