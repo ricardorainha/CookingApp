@@ -128,4 +128,21 @@ public class Step implements Parcelable
         return 0;
     }
 
+    public boolean hasVideo() {
+        return ((videoURL != null && !videoURL.trim().isEmpty()) || (thumbnailURL != null && !thumbnailURL.trim().isEmpty()));
+    }
+
+    public String getVideoOrThumbURL() {
+        if (hasVideo()) {
+            if (videoURL != null && !videoURL.trim().isEmpty()) {
+                return getVideoURL().trim();
+            }
+            else {
+                return getThumbnailURL().trim();
+            }
+        }
+
+        return null;
+    }
+
 }

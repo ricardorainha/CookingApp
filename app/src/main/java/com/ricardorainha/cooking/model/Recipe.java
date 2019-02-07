@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -146,6 +148,16 @@ public class Recipe implements Parcelable
 
     public int describeContents() {
         return 0;
+    }
+
+    public String getIngredientsText() {
+        String[] ingredients = new String[getIngredients().size()];
+        for (int i = 0; i < getIngredients().size(); i++) {
+            Ingredient ingredient = getIngredients().get(i);
+            ingredients[i] = String.format("%.1f %s of %s", ingredient.getQuantity(), ingredient.getMeasure(), ingredient.getIngredient());
+        }
+
+        return TextUtils.join("\n", ingredients);
     }
 
 }

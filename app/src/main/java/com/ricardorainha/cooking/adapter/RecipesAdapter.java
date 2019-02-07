@@ -29,8 +29,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipes_list_item, parent, false);
-
         RecipeViewHolder viewHolder = new RecipeViewHolder(itemView);
+
         return viewHolder;
     }
 
@@ -40,15 +40,15 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         Recipe recipe = recipes.get(position);
 
         viewHolder.tvRecipeName.setText(recipe.getName());
-        viewHolder.tvRecipeServings.setText(recipe.getServings() + " servings");
+        viewHolder.tvRecipeServings.setText(holder.itemView.getContext().getString(R.string.serves, recipe.getServings()));
     }
 
     @Override
     public int getItemCount() {
-        if (recipes == null)
-            return 0;
-        else
+        if (recipes != null)
             return recipes.size();
+        else
+            return 0;
     }
 
     class RecipeViewHolder extends RecyclerView.ViewHolder {
