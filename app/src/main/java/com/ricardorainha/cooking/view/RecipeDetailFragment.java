@@ -1,5 +1,6 @@
 package com.ricardorainha.cooking.view;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -17,7 +18,6 @@ import butterknife.ButterKnife;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.ricardorainha.cooking.R;
 import com.ricardorainha.cooking.databinding.RecipeDetailFragmentBinding;
@@ -40,7 +40,6 @@ public class RecipeDetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
         RecipeDetailFragmentBinding binding = DataBindingUtil.inflate(inflater, R.layout.recipe_detail_fragment, container, false);
         binding.setLifecycleOwner(this);
         View rootView = binding.getRoot();
@@ -51,23 +50,26 @@ public class RecipeDetailFragment extends Fragment {
         binding.setViewModel(mViewModel);
 
         setupViews();
-
-        mViewModel.getAdapter().observe(this, stepsAdapter -> rvSteps.setAdapter(stepsAdapter));
-        mViewModel.getStepSelectedIndex().observe(this, stepIndex -> {
-            Toast.makeText(getContext(), "Index: " + stepIndex, Toast.LENGTH_SHORT).show();
-//            Intent stepSelectedIntent = new Intent(getContext(), RecipeDetailActivity.class);
-//            stepSelectedIntent.putExtra("stepIndex", stepIndex);
-//            startActivity(stepSelectedIntent);
-        });
-
+        configureObservables();
 
         return rootView;
     }
 
     private void setupViews() {
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mViewModel.getRecipe().getName());
         rvSteps.setLayoutManager(new LinearLayoutManager(getContext()));
         rvSteps.setHasFixedSize(true);
     }
 
-
+    private void configureObservables() {
+        mViewModel.getAdapter().observe(this, stepsAdapter -> {
+            rvSteps.setAdapter(stepsAdapter);
+        });
+        mViewModel.getStepSelectedIndex().observe(this, stepIndex -> {
+            Intent stepSelectedIntent = new Intent(getContext(), RecipeStepActivity.class);
+            stepSelectedIntent.putExtra("recipeIndex", recipeIndex);
+            stepSelectedIntent.putExtra("stepIndex", stepIndex);
+            startActivity(stepSelectedIntent);
+        });
+    }
 }
