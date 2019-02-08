@@ -16,6 +16,7 @@ public class RecipeStepViewModel extends ViewModel {
     private Recipe recipe;
     private MutableLiveData<Step> selectedStep = new MutableLiveData<>();
     private ObservableField<Integer> currentStepIndex = new ObservableField<>();
+
     public void init(int recipeIndex, int stepIndex) {
         recipe = Repository.getInstance().getRecipe(recipeIndex);
         currentStepIndex.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {

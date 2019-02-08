@@ -71,19 +71,45 @@ public class RecipeStepFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        releasePlayer();
+    }
+
     private void setupViews() {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mViewModel.getRecipe().getName());
         tvRecipeStepDescription.setMovementMethod(new ScrollingMovementMethod());
 
         player = ExoPlayerFactory.newSimpleInstance(getContext());
+        player.setPlayWhenReady(true);
         pvRecipeStepVideo.setPlayer(player);
         dataSourceFactory = new DefaultDataSourceFactory(getContext(), Util.getUserAgent(getContext(), getString(R.string.app_name)));
+
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        ViewGroup.LayoutParams params = pvRecipeStepVideo.getLayoutParams();
+        params.height = (int) (((float) 1080 / (float) 1920) * (float) screenWidth);
+        pvRecipeStepVideo.setLayoutParams(params);
     }
 
     private void configureObservables() {
         mViewModel.getSelectedStep().observe(this, step -> {
-            MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(step.getVideoOrThumbURL()));
-            player.prepare(videoSource);
+            player.stop();
+            if (step.hasVideo()) {
+                MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(step.getVideoOrThumbURL()));
+                player.prepare(videoSource);
+            }
         });
+    }
+
+    private void releasePlayer() {
+        player.stop();
+        player.release();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        player.stop();
     }
 }
