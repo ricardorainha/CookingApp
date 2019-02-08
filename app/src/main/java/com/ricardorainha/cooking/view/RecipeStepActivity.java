@@ -3,6 +3,7 @@ package com.ricardorainha.cooking.view;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.ricardorainha.cooking.R;
 
@@ -23,5 +24,14 @@ public class RecipeStepActivity extends AppCompatActivity {
                     .replace(R.id.container, RecipeStepFragment.newInstance(recipeIndex, stepIndex))
                     .commitNow();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
