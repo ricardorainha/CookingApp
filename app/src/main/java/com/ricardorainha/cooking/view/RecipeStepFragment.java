@@ -1,24 +1,48 @@
 package com.ricardorainha.cooking.view;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.ricardorainha.cooking.R;
+import com.ricardorainha.cooking.databinding.RecipeStepFragmentBinding;
 
 public class RecipeStepFragment extends Fragment {
 
-    private RecipeStepViewModel mViewModel;
     private int recipeIndex;
     private int stepIndex;
+    private RecipeStepViewModel mViewModel;
+    private DataSource.Factory dataSourceFactory;
+    private SimpleExoPlayer player;
+
+    @BindView(R.id.tv_recipe_step_description)
+    TextView tvRecipeStepDescription;
+    @BindView(R.id.pv_recipe_step_video)
+    PlayerView pvRecipeStepVideo;
+
 
     public static RecipeStepFragment newInstance(int recipeIndex, int stepIndex) {
         RecipeStepFragment instance = new RecipeStepFragment();
@@ -32,14 +56,34 @@ public class RecipeStepFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.recipe_step_fragment, container, false);
-    }
+        RecipeStepFragmentBinding binding = DataBindingUtil.inflate(inflater, R.layout.recipe_step_fragment, container, false);
+        binding.setLifecycleOwner(this);
+        View rootView = binding.getRoot();
+        ButterKnife.bind(this, rootView);
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(RecipeStepViewModel.class);
-        // TODO: Use the ViewModel
+        mViewModel.init(recipeIndex, stepIndex);
+        binding.setViewModel(mViewModel);
+
+        setupViews();
+        configureObservables();
+
+        return rootView;
     }
 
+    private void setupViews() {
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mViewModel.getRecipe().getName());
+        tvRecipeStepDescription.setMovementMethod(new ScrollingMovementMethod());
+
+        player = ExoPlayerFactory.newSimpleInstance(getContext());
+        pvRecipeStepVideo.setPlayer(player);
+        dataSourceFactory = new DefaultDataSourceFactory(getContext(), Util.getUserAgent(getContext(), getString(R.string.app_name)));
+    }
+
+    private void configureObservables() {
+        mViewModel.getSelectedStep().observe(this, step -> {
+            MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(step.getVideoOrThumbURL()));
+            player.prepare(videoSource);
+        });
+    }
 }

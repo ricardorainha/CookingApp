@@ -111,6 +111,10 @@ public class Recipe implements Parcelable
         return this;
     }
 
+    public int getStepsTotal() {
+        return steps.size();
+    }
+
     public int getServings() {
         return servings;
     }

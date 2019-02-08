@@ -1,20 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recipestep"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".com.ricardorainha.cooking.view.model.RecipeStepFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="RecipeStepFragment"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
+        <variable
+            name="viewModel"
+            type="com.ricardorainha.cooking.view.RecipeStepViewModel" />
+    </data>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.RecipeStepFragment">
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/pv_recipe_step_video"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="200dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_recipe_step_description"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:scrollbars="vertical"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:text="@{ viewModel.selectedStep.description }"
+            app:layout_constraintBottom_toTopOf="@+id/tv_recipe_step_previous"
+            app:layout_constraintTop_toBottomOf="@+id/pv_recipe_step_video"
+            tools:layout_editor_absoluteX="8dp"
+            tools:text="5. Beat the cream cheese and 50 grams (1/4 cup) of sugar on medium speed in a stand mixer or high speed with a hand mixer for 3 minutes. Decrease the speed to medium-low and gradually add in the cold cream. Add in 2 teaspoons of vanilla and beat until stiff peaks form." />
+
+
+        <TextView
+            android:id="@+id/tv_recipe_step_previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="8dp"
+            android:drawableStart="@drawable/baseline_skip_previous_black_36"
+            android:gravity="center_vertical"
+            android:text="@string/previous_step"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:enabled="@{ viewModel.selectedStep.id == 0 ? false : true }"
+            android:onClick="@{ viewModel::onPreviousStepClicked }"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_recipe_step_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="8dp"
+            android:drawableEnd="@drawable/baseline_skip_next_black_36"
+            android:gravity="center_vertical"
+            android:text="@string/next_step"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:enabled="@{ viewModel.selectedStep.id == (viewModel.recipe.stepsTotal - 1) ? false : true }"
+            android:onClick="@{ viewModel::onNextStepClicked }"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
