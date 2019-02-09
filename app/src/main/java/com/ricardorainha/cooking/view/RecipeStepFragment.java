@@ -17,6 +17,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -42,6 +43,8 @@ public class RecipeStepFragment extends Fragment {
     TextView tvRecipeStepDescription;
     @BindView(R.id.pv_recipe_step_video)
     PlayerView pvRecipeStepVideo;
+    @BindView(R.id.fl_recipe_step_video)
+    FrameLayout flRecipeStepVideoLayout;
 
 
     public static RecipeStepFragment newInstance(int recipeIndex, int stepIndex) {
@@ -66,6 +69,7 @@ public class RecipeStepFragment extends Fragment {
         binding.setViewModel(mViewModel);
 
         setupViews();
+        setupVideoPlayer();
         configureObservables();
 
         return rootView;
@@ -81,15 +85,17 @@ public class RecipeStepFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mViewModel.getRecipe().getName());
         tvRecipeStepDescription.setMovementMethod(new ScrollingMovementMethod());
 
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        ViewGroup.LayoutParams params = flRecipeStepVideoLayout.getLayoutParams();
+        params.height = (int) (((float) 1080 / (float) 1920) * (float) screenWidth);
+        flRecipeStepVideoLayout.setLayoutParams(params);
+    }
+
+    private void setupVideoPlayer() {
         player = ExoPlayerFactory.newSimpleInstance(getContext());
         player.setPlayWhenReady(true);
         pvRecipeStepVideo.setPlayer(player);
         dataSourceFactory = new DefaultDataSourceFactory(getContext(), Util.getUserAgent(getContext(), getString(R.string.app_name)));
-
-        int screenWidth = getResources().getDisplayMetrics().widthPixels;
-        ViewGroup.LayoutParams params = pvRecipeStepVideo.getLayoutParams();
-        params.height = (int) (((float) 1080 / (float) 1920) * (float) screenWidth);
-        pvRecipeStepVideo.setLayoutParams(params);
     }
 
     private void configureObservables() {
