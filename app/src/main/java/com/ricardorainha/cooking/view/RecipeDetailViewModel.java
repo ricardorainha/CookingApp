@@ -14,11 +14,13 @@ public class RecipeDetailViewModel extends ViewModel implements StepsAdapter.OnC
     private MutableLiveData<Boolean> showIngredients = new MutableLiveData<>();
     private MutableLiveData<StepsAdapter> adapter = new MutableLiveData<>();
     private MutableLiveData<Integer> stepSelectedIndex = new MutableLiveData<>();
+    private boolean hasTwoPane;
     private Recipe recipe;
     private int recipeIndex;
 
     public RecipeDetailViewModel() {
         showIngredients.setValue(false);
+        hasTwoPane = false;
     }
 
     public void init(int recipeIndex) {
@@ -46,6 +48,14 @@ public class RecipeDetailViewModel extends ViewModel implements StepsAdapter.OnC
 
     public MutableLiveData<Integer> getStepSelectedIndex() {
         return stepSelectedIndex;
+    }
+
+    public boolean hasTwoPane() {
+        return hasTwoPane;
+    }
+
+    public void setHasTwoPane(boolean hasTwoPane) {
+        this.hasTwoPane = hasTwoPane;
     }
 
     public void onIngredientsClicked(View view) {

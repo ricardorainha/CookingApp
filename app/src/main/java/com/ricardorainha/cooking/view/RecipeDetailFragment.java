@@ -25,6 +25,7 @@ import com.ricardorainha.cooking.databinding.RecipeDetailFragmentBinding;
 public class RecipeDetailFragment extends Fragment {
 
     private RecipeDetailViewModel mViewModel;
+    private RecipeStepViewModel mStepsViewModel;
     @BindView(R.id.rv_steps)
     RecyclerView rvSteps;
 
@@ -72,10 +73,16 @@ public class RecipeDetailFragment extends Fragment {
         mViewModel.getAdapter().observe(this, stepsAdapter -> rvSteps.setAdapter(stepsAdapter));
         mViewModel.getStepSelectedIndex().observe(this, stepIndex -> {
             if (stepIndex != null) {
-                Intent stepSelectedIntent = new Intent(getContext(), RecipeStepActivity.class);
-                stepSelectedIntent.putExtra("recipeIndex", mViewModel.getRecipeIndex());
-                stepSelectedIntent.putExtra("stepIndex", stepIndex);
-                startActivity(stepSelectedIntent);
+                if (mViewModel.hasTwoPane()) {
+                    mStepsViewModel = ViewModelProviders.of(getActivity()).get(RecipeStepViewModel.class);
+                    mStepsViewModel.getCurrentStepIndex().setValue(stepIndex);
+                }
+                else {
+                    Intent stepSelectedIntent = new Intent(getContext(), RecipeStepActivity.class);
+                    stepSelectedIntent.putExtra("recipeIndex", mViewModel.getRecipeIndex());
+                    stepSelectedIntent.putExtra("stepIndex", stepIndex);
+                    startActivity(stepSelectedIntent);
+                }
             }
         });
     }

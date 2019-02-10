@@ -88,9 +88,8 @@ public class RecipeStepFragment extends Fragment {
         tvRecipeStepDescription.setMovementMethod(new ScrollingMovementMethod());
 
         if (flRecipeStepVideoLayout != null) {
-            int screenWidth = getResources().getDisplayMetrics().widthPixels;
             ViewGroup.LayoutParams params = flRecipeStepVideoLayout.getLayoutParams();
-            params.height = (int) (((float) 1080 / (float) 1920) * (float) screenWidth);
+            params.height = (int) (((float) 1080 / (float) 1920) * (float) params.width);
             flRecipeStepVideoLayout.setLayoutParams(params);
         }
     }

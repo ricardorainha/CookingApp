@@ -15,6 +15,7 @@ public class RecipeStepViewModel extends ViewModel {
     private Recipe recipe;
     private MutableLiveData<Step> selectedStep = new MutableLiveData<>();
     private MutableLiveData<Integer> currentStepIndex = new MutableLiveData<>();
+    private MutableLiveData<Boolean> shouldShowLayout = new MutableLiveData<>();
     private ObservableField<Long> currentVideoPosition = new ObservableField<>();
 
     public RecipeStepViewModel() {
@@ -23,8 +24,11 @@ public class RecipeStepViewModel extends ViewModel {
 
     public void init(int recipeIndex, int stepIndex) {
         recipe = Repository.getInstance().getRecipe(recipeIndex);
-        currentStepIndex.observeForever(newIndex -> selectedStep.setValue(recipe.getSteps().get(newIndex)));
-        if (currentStepIndex.getValue() == null)
+        currentStepIndex.observeForever(newIndex -> {
+            selectedStep.setValue(recipe.getSteps().get(newIndex));
+            shouldShowLayout.setValue((currentStepIndex.getValue() != null) && (currentStepIndex.getValue() != -1));
+        });
+        if (currentStepIndex.getValue() == null && stepIndex != -1)
             currentStepIndex.setValue(stepIndex);
     }
 
@@ -42,6 +46,10 @@ public class RecipeStepViewModel extends ViewModel {
 
     public ObservableField<Long> getCurrentVideoPosition() {
         return currentVideoPosition;
+    }
+
+    public MutableLiveData<Boolean> getShouldShowLayout() {
+        return shouldShowLayout;
     }
 
     public void onNextStepClicked(View view) {

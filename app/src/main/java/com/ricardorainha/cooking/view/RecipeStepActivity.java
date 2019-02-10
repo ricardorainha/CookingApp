@@ -26,7 +26,7 @@ public class RecipeStepActivity extends AppCompatActivity {
             mViewModel = ViewModelProviders.of(this).get(RecipeStepViewModel.class);
             mViewModel.init(recipeIndex, stepIndex);
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, RecipeStepFragment.newInstance())
+                    .replace(R.id.step_container, RecipeStepFragment.newInstance())
                     .commitNow();
         }
     }
