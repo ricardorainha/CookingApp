@@ -11,7 +11,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.MainActivity" android:launchMode="singleTask">
+        <receiver android:name=".widget.RecipeIngredientsWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/cooking_app_recipe_widget_info" />
+        </receiver>
+
+        <service
+            android:name=".widget.RecipeIngredientsWidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <activity android:name=".widget.RecipeIngredientsWidgetConfigureActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.MainActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,12 +42,12 @@
         </activity>
         <activity
             android:name=".view.RecipeDetailActivity"
-            android:parentActivityName=".view.MainActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:parentActivityName=".view.MainActivity" />
         <activity
             android:name=".view.RecipeStepActivity"
-            android:parentActivityName=".view.RecipeDetailActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:parentActivityName=".view.RecipeDetailActivity" />
     </application>
 
 </manifest>
