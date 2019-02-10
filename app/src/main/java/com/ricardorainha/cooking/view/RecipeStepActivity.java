@@ -1,6 +1,7 @@
 package com.ricardorainha.cooking.view;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -8,6 +9,8 @@ import android.view.MenuItem;
 import com.ricardorainha.cooking.R;
 
 public class RecipeStepActivity extends AppCompatActivity {
+
+    private RecipeStepViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +23,10 @@ public class RecipeStepActivity extends AppCompatActivity {
                 recipeIndex = getIntent().getIntExtra("recipeIndex", recipeIndex);
                 stepIndex = getIntent().getIntExtra("stepIndex", stepIndex);
             }
+            mViewModel = ViewModelProviders.of(this).get(RecipeStepViewModel.class);
+            mViewModel.init(recipeIndex, stepIndex);
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, RecipeStepFragment.newInstance(recipeIndex, stepIndex))
+                    .replace(R.id.container, RecipeStepFragment.newInstance())
                     .commitNow();
         }
     }

@@ -24,16 +24,12 @@ import com.ricardorainha.cooking.databinding.RecipeDetailFragmentBinding;
 
 public class RecipeDetailFragment extends Fragment {
 
-    private int recipeIndex;
     private RecipeDetailViewModel mViewModel;
     @BindView(R.id.rv_steps)
     RecyclerView rvSteps;
 
-    public static RecipeDetailFragment newInstance(int recipeIndex) {
-        RecipeDetailFragment instance = new RecipeDetailFragment();
-        instance.recipeIndex = recipeIndex;
-
-        return instance;
+    public static RecipeDetailFragment newInstance() {
+        return new RecipeDetailFragment();
     }
 
     @Nullable
@@ -45,14 +41,25 @@ public class RecipeDetailFragment extends Fragment {
         View rootView = binding.getRoot();
         ButterKnife.bind(this, rootView);
 
-        mViewModel = ViewModelProviders.of(this).get(RecipeDetailViewModel.class);
-        mViewModel.init(recipeIndex);
+        mViewModel = ViewModelProviders.of(getActivity()).get(RecipeDetailViewModel.class);
         binding.setViewModel(mViewModel);
 
         setupViews();
-        configureObservables();
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mViewModel.getStepSelectedIndex().setValue(null);
+        configureObservables();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopObserving();
     }
 
     private void setupViews() {
@@ -62,14 +69,19 @@ public class RecipeDetailFragment extends Fragment {
     }
 
     private void configureObservables() {
-        mViewModel.getAdapter().observe(this, stepsAdapter -> {
-            rvSteps.setAdapter(stepsAdapter);
-        });
+        mViewModel.getAdapter().observe(this, stepsAdapter -> rvSteps.setAdapter(stepsAdapter));
         mViewModel.getStepSelectedIndex().observe(this, stepIndex -> {
-            Intent stepSelectedIntent = new Intent(getContext(), RecipeStepActivity.class);
-            stepSelectedIntent.putExtra("recipeIndex", recipeIndex);
-            stepSelectedIntent.putExtra("stepIndex", stepIndex);
-            startActivity(stepSelectedIntent);
+            if (stepIndex != null) {
+                Intent stepSelectedIntent = new Intent(getContext(), RecipeStepActivity.class);
+                stepSelectedIntent.putExtra("recipeIndex", mViewModel.getRecipeIndex());
+                stepSelectedIntent.putExtra("stepIndex", stepIndex);
+                startActivity(stepSelectedIntent);
+            }
         });
+    }
+
+    private void stopObserving() {
+        mViewModel.getAdapter().removeObservers(this);
+        mViewModel.getStepSelectedIndex().removeObservers(this);
     }
 }

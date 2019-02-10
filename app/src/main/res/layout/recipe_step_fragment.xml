@@ -30,6 +30,7 @@
                 android:id="@+id/pv_recipe_step_video"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@android:color/black"
                 android:visibility="@{ safeUnbox(viewModel.selectedStep.hasVideo) ? View.VISIBLE : View.GONE }" />
 
             <TextView

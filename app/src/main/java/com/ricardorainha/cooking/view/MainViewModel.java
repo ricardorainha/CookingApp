@@ -1,5 +1,7 @@
 package com.ricardorainha.cooking.view;
 
+import android.util.Log;
+
 import com.ricardorainha.cooking.adapter.RecipesAdapter;
 import com.ricardorainha.cooking.model.Recipe;
 import com.ricardorainha.cooking.model.Repository;
@@ -19,14 +21,20 @@ public class MainViewModel extends ViewModel implements Observer, RecipesAdapter
     private List<Recipe> recipes = new ArrayList<>();
     private Repository repo;
 
-    public void init() {
+    public MainViewModel() {
         repo = Repository.getInstance();
         repo.addObserver(this);
         loadRecipes();
     }
 
+    public void init() {
+        recipeSelectedIndex.setValue(null);
+    }
+
     private void loadRecipes() {
-        repo.requestRecipes();
+        if (recipes.size() == 0) {
+            repo.requestRecipes();
+        }
     }
 
     public MutableLiveData<RecipesAdapter> getAdapter() {

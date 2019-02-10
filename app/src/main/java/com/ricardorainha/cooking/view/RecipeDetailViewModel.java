@@ -15,15 +15,25 @@ public class RecipeDetailViewModel extends ViewModel implements StepsAdapter.OnC
     private MutableLiveData<StepsAdapter> adapter = new MutableLiveData<>();
     private MutableLiveData<Integer> stepSelectedIndex = new MutableLiveData<>();
     private Recipe recipe;
+    private int recipeIndex;
+
+    public RecipeDetailViewModel() {
+        showIngredients.setValue(false);
+    }
 
     public void init(int recipeIndex) {
+        this.recipeIndex = recipeIndex;
         recipe = Repository.getInstance().getRecipe(recipeIndex);
         adapter.setValue(new StepsAdapter(recipe.getSteps(), this));
-        showIngredients.setValue(false);
+        stepSelectedIndex.setValue(null);
     }
 
     public Recipe getRecipe() {
         return recipe;
+    }
+
+    public int getRecipeIndex() {
+        return recipeIndex;
     }
 
     public MutableLiveData<Boolean> getShowIngredients() {

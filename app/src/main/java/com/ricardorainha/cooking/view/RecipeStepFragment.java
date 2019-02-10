@@ -12,8 +12,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Optional;
 
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +35,6 @@ import com.ricardorainha.cooking.databinding.RecipeStepFragmentBinding;
 
 public class RecipeStepFragment extends Fragment {
 
-    private int recipeIndex;
-    private int stepIndex;
     private RecipeStepViewModel mViewModel;
     private DataSource.Factory dataSourceFactory;
     private SimpleExoPlayer player;
@@ -43,16 +43,12 @@ public class RecipeStepFragment extends Fragment {
     TextView tvRecipeStepDescription;
     @BindView(R.id.pv_recipe_step_video)
     PlayerView pvRecipeStepVideo;
+    @Nullable
     @BindView(R.id.fl_recipe_step_video)
     FrameLayout flRecipeStepVideoLayout;
 
-
-    public static RecipeStepFragment newInstance(int recipeIndex, int stepIndex) {
-        RecipeStepFragment instance = new RecipeStepFragment();
-        instance.recipeIndex = recipeIndex;
-        instance.stepIndex = stepIndex;
-
-        return instance;
+    public static RecipeStepFragment newInstance() {
+        return new RecipeStepFragment();
     }
 
     @Nullable
@@ -64,8 +60,7 @@ public class RecipeStepFragment extends Fragment {
         View rootView = binding.getRoot();
         ButterKnife.bind(this, rootView);
 
-        mViewModel = ViewModelProviders.of(this).get(RecipeStepViewModel.class);
-        mViewModel.init(recipeIndex, stepIndex);
+        mViewModel = ViewModelProviders.of(getActivity()).get(RecipeStepViewModel.class);
         binding.setViewModel(mViewModel);
 
         setupViews();
@@ -73,6 +68,13 @@ public class RecipeStepFragment extends Fragment {
         configureObservables();
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mViewModel.getSelectedStep().getValue().hasVideo())
+            mViewModel.getCurrentVideoPosition().set(player.getCurrentPosition());
     }
 
     @Override
@@ -85,10 +87,12 @@ public class RecipeStepFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mViewModel.getRecipe().getName());
         tvRecipeStepDescription.setMovementMethod(new ScrollingMovementMethod());
 
-        int screenWidth = getResources().getDisplayMetrics().widthPixels;
-        ViewGroup.LayoutParams params = flRecipeStepVideoLayout.getLayoutParams();
-        params.height = (int) (((float) 1080 / (float) 1920) * (float) screenWidth);
-        flRecipeStepVideoLayout.setLayoutParams(params);
+        if (flRecipeStepVideoLayout != null) {
+            int screenWidth = getResources().getDisplayMetrics().widthPixels;
+            ViewGroup.LayoutParams params = flRecipeStepVideoLayout.getLayoutParams();
+            params.height = (int) (((float) 1080 / (float) 1920) * (float) screenWidth);
+            flRecipeStepVideoLayout.setLayoutParams(params);
+        }
     }
 
     private void setupVideoPlayer() {
@@ -104,6 +108,7 @@ public class RecipeStepFragment extends Fragment {
             if (step.hasVideo()) {
                 MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(step.getVideoOrThumbURL()));
                 player.prepare(videoSource);
+                player.seekTo(mViewModel.getCurrentVideoPosition().get());
             }
         });
     }

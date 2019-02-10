@@ -6,7 +6,6 @@ import com.ricardorainha.cooking.model.Recipe;
 import com.ricardorainha.cooking.model.Repository;
 import com.ricardorainha.cooking.model.Step;
 
-import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -15,17 +14,18 @@ public class RecipeStepViewModel extends ViewModel {
 
     private Recipe recipe;
     private MutableLiveData<Step> selectedStep = new MutableLiveData<>();
-    private ObservableField<Integer> currentStepIndex = new ObservableField<>();
+    private MutableLiveData<Integer> currentStepIndex = new MutableLiveData<>();
+    private ObservableField<Long> currentVideoPosition = new ObservableField<>();
+
+    public RecipeStepViewModel() {
+        resetVideoPosition();
+    }
 
     public void init(int recipeIndex, int stepIndex) {
         recipe = Repository.getInstance().getRecipe(recipeIndex);
-        currentStepIndex.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
-            @Override
-            public void onPropertyChanged(Observable sender, int newIndex) {
-                selectedStep.setValue(recipe.getSteps().get(currentStepIndex.get()));
-            }
-        });
-        currentStepIndex.set(stepIndex);
+        currentStepIndex.observeForever(newIndex -> selectedStep.setValue(recipe.getSteps().get(newIndex)));
+        if (currentStepIndex.getValue() == null)
+            currentStepIndex.setValue(stepIndex);
     }
 
     public Recipe getRecipe() {
@@ -36,17 +36,29 @@ public class RecipeStepViewModel extends ViewModel {
         return selectedStep;
     }
 
-    public int getCurrentStepIndex() {
-        return currentStepIndex.get();
+    public MutableLiveData<Integer> getCurrentStepIndex() {
+        return currentStepIndex;
+    }
+
+    public ObservableField<Long> getCurrentVideoPosition() {
+        return currentVideoPosition;
     }
 
     public void onNextStepClicked(View view) {
-        if (currentStepIndex.get() < (recipe.getStepsTotal()-1))
-            currentStepIndex.set(currentStepIndex.get()+1);
+        if (currentStepIndex.getValue() < (recipe.getStepsTotal()-1)) {
+            resetVideoPosition();
+            currentStepIndex.setValue(currentStepIndex.getValue() + 1);
+        }
     }
 
     public void onPreviousStepClicked(View view) {
-        if (currentStepIndex.get() > 0)
-            currentStepIndex.set(currentStepIndex.get()-1);
+        if (currentStepIndex.getValue() > 0) {
+            resetVideoPosition();
+            currentStepIndex.setValue(currentStepIndex.getValue() - 1);
+        }
+    }
+
+    private void resetVideoPosition() {
+        currentVideoPosition.set(0L);
     }
 }

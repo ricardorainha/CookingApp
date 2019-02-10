@@ -37,9 +37,11 @@ public class RecipesListFragment extends Fragment {
 
         viewModel.getAdapter().observe(this, adapter -> rvRecipes.setAdapter(adapter));
         viewModel.getRecipeSelectedIndex().observe(this, recipeIndex -> {
-            Intent recipeDetailsIntent = new Intent(getContext(), RecipeDetailActivity.class);
-            recipeDetailsIntent.putExtra("recipeIndex", recipeIndex);
-            startActivity(recipeDetailsIntent);
+            if (recipeIndex != null) {
+                Intent recipeDetailsIntent = new Intent(getContext(), RecipeDetailActivity.class);
+                recipeDetailsIntent.putExtra("recipeIndex", recipeIndex);
+                startActivity(recipeDetailsIntent);
+            }
         });
 
         return rootView;
