@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.widget.RemoteViews;
 
 import com.ricardorainha.cooking.R;
@@ -23,6 +24,7 @@ public class RecipeIngredientsWidget extends AppWidgetProvider {
 
         Intent ingredientsIntent = new Intent(context, RecipeIngredientsWidgetService.class);
         ingredientsIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        ingredientsIntent.setData(Uri.parse(ingredientsIntent.toUri(Intent.URI_INTENT_SCHEME)));
 
         views.setTextViewText(R.id.tv_widget_recipe_name, recipeName);
         views.setRemoteAdapter(R.id.lv_widget_ingredients, ingredientsIntent);

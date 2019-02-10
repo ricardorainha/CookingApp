@@ -20,7 +20,8 @@ public class RecipeIngredientsWidgetRemoteViewsFactory implements RemoteViewsSer
 
     public RecipeIngredientsWidgetRemoteViewsFactory(Context context, Intent intent) {
         this.context = context;
-        appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+        this.appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+        this.ingredientsList.clear();
     }
 
     @Override
@@ -35,7 +36,7 @@ public class RecipeIngredientsWidgetRemoteViewsFactory implements RemoteViewsSer
 
     @Override
     public void onDestroy() {
-
+        this.ingredientsList.clear();
     }
 
     @Override
