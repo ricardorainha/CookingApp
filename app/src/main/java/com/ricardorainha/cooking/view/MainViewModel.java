@@ -1,6 +1,6 @@
 package com.ricardorainha.cooking.view;
 
-import android.util.Log;
+import android.view.View;
 
 import com.ricardorainha.cooking.adapter.RecipesAdapter;
 import com.ricardorainha.cooking.model.Recipe;
@@ -18,12 +18,15 @@ public class MainViewModel extends ViewModel implements Observer, RecipesAdapter
 
     private MutableLiveData<RecipesAdapter> adapter = new MutableLiveData<>();
     private MutableLiveData<Integer> recipeSelectedIndex = new MutableLiveData<>();
+    private MutableLiveData<Boolean> errorLoading = new MutableLiveData<>();
+    private MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
     private List<Recipe> recipes = new ArrayList<>();
     private Repository repo;
 
     public MainViewModel() {
         repo = Repository.getInstance();
         repo.addObserver(this);
+        errorLoading.setValue(false);
         loadRecipes();
     }
 
@@ -32,6 +35,7 @@ public class MainViewModel extends ViewModel implements Observer, RecipesAdapter
     }
 
     private void loadRecipes() {
+        loadingState.setValue(true);
         if (recipes.size() == 0) {
             repo.requestRecipes();
         }
@@ -45,9 +49,18 @@ public class MainViewModel extends ViewModel implements Observer, RecipesAdapter
         return recipeSelectedIndex;
     }
 
+    public MutableLiveData<Boolean> getLoadingState() {
+        return loadingState;
+    }
+
+    public MutableLiveData<Boolean> getErrorLoading() {
+        return errorLoading;
+    }
+
     @Override
     public void update(Observable o, Object arg) {
         if (o instanceof Repository) {
+            loadingState.setValue(false);
             byte response = (byte) arg;
             if (response == Repository.RECIPES_SUCCESSFULLY_LOADED) {
                 if (repo != null) {
@@ -55,11 +68,19 @@ public class MainViewModel extends ViewModel implements Observer, RecipesAdapter
                     adapter.setValue(new RecipesAdapter(recipes, this));
                 }
             }
+            else {
+                errorLoading.setValue(true);
+            }
         }
     }
 
     @Override
     public void onRecipeSelected(int position) {
         recipeSelectedIndex.setValue(position);
+    }
+
+    public void onErrorMessageClicked(View view) {
+        errorLoading.setValue(false);
+        loadRecipes();
     }
 }

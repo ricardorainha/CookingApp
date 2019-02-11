@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="com.ricardorainha.cooking.view.MainViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_recipes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{ safeUnbox(viewModel.errorLoading) || safeUnbox(viewModel.loadingState) ? View.GONE : View.VISIBLE }" />
+
+        <ProgressBar
+            android:id="@+id/pb_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="@{ safeUnbox(viewModel.loadingState) ? View.VISIBLE : View.GONE }" />
+
+        <TextView
+            android:id="@+id/tv_error_loading_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableTop="@drawable/baseline_error_outline_black_48"
+            android:drawableTint="@android:color/black"
+            android:text="@string/error_loading_recipes"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:visibility="@{ safeUnbox(viewModel.errorLoading) ? View.VISIBLE : View.GONE }"
+            android:onClick="@{ viewModel::onErrorMessageClicked }"/>
+
+    </FrameLayout>
+</layout>

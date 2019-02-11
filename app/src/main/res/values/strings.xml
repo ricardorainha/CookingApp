@@ -7,4 +7,5 @@
     <string name="next_step">Next</string>
     <string name="step_no_video">No video</string>
     <string name="select_recipe">Select recipe to view ingredients</string>
+    <string name="error_loading_recipes">Error loading recipes.\nPlease check your internet connection.\n\nClick here to try again.</string>
 </resources>
