@@ -63,7 +63,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fl_recipe_step_video"
-            tools:text="5. Beat the cream cheese and 50 grams (1/4 cup) of sugar on medium speed in a stand mixer or high speed with a hand mixer for 3 minutes. Decrease the speed to medium-low and gradually add in the cold cream. Add in 2 teaspoons of vanilla and beat until stiff peaks form." />
+            tools:text="@string/recipe_step_description_mock_text" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

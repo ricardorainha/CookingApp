@@ -7,4 +7,5 @@
     <string name="step_no_video">No video</string>
     <string name="select_recipe">Select recipe to view ingredients</string>
     <string name="error_loading_recipes">Error loading recipes.\nPlease check your internet connection.\n\nClick here to try again.</string>
+    <string name="recipe_step_description_mock_text">5. Beat the cream cheese and 50 grams (1/4 cup) of sugar on medium speed in a stand mixer or high speed with a hand mixer for 3 minutes. Decrease the speed to medium-low and gradually add in the cold cream. Add in 2 teaspoons of vanilla and beat until stiff peaks form.</string>
 </resources>
