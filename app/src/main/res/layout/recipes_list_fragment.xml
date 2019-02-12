@@ -33,7 +33,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:drawableTop="@drawable/baseline_error_outline_black_48"
-            android:drawableTint="@android:color/black"
             android:text="@string/error_loading_recipes"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
